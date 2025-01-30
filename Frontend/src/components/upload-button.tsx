@@ -1,7 +1,7 @@
 import { Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
-import React, { type HTMLAttributes } from "react"
+import React from "react"
 
 // Add proper type declaration for the webkitdirectory attribute
 declare module "react" {
