@@ -1,3 +1,5 @@
+"use client"
+
 import { motion } from "framer-motion"
 import { useState } from "react"
 import { TreeView, type TreeNode } from "@/components/tree-view"
@@ -8,6 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertTriangle, FileCode, FileDown } from "lucide-react"
 import CodeBlock from "@/components/code-block"
+import { UploadButton } from "@/components/upload-button"
+import { Separator } from "@/components/ui/separator"
 import axios from 'axios'
 
 interface GeneratedFiles {
@@ -40,21 +44,21 @@ export default function DockerfileGenerator() {
     }
 
     const updateChildren = (nodes: TreeNode[]): TreeNode[] => {
-    return nodes.map((node) => {
-      if (node.id === parentId) {
-        return {
-        ...node,
-        children: [...(node.children || []), newNode],
+      return nodes.map((node) => {
+        if (node.id === parentId) {
+          return {
+            ...node,
+            children: [...(node.children || []), newNode],
+          }
         }
-      }
-      if (node.children) {
-        return {
-        ...node,
-        children: updateChildren(node.children),
+        if (node.children) {
+          return {
+            ...node,
+            children: updateChildren(node.children),
+          }
         }
-      }
-      return node
-    })
+        return node
+      })
     }
 
     setStructure(updateChildren(structure))
@@ -81,22 +85,19 @@ export default function DockerfileGenerator() {
   const handleGenerate = async () => {
     setIsGenerating(true)
     try {
-        const response = await axios.post('https://ai-docker.onrender.com/docker-generate',{
-            language,
-            structure
-        });
-
-        const data = response.data.content;
-        // data is just dockerfile content
-        setGeneratedFiles({
-            dockerfile: data,
-            dockerignore: "",
-            analysis: {
-                summary: "Analysis completed",
-                suggestions: [],
-                warnings: [],
-            },
-        })
+      console.log(structure);
+      const response = await axios.post('https://ai-docker.onrender.com/docker-generate', { language, structure }); 
+      const data = response.data.content;         
+      // data is just dockerfile content         
+      setGeneratedFiles({             
+        dockerfile: data,             
+        dockerignore: "",             
+        analysis: {                 
+          summary: "Analysis completed",                 
+          suggestions: [],                 
+          warnings: [],             
+        },         
+      })
     } catch (error) {
       console.error("Error:", error)
       // You might want to add error state handling here
@@ -158,6 +159,11 @@ export default function DockerfileGenerator() {
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                  <div className="space-y-4 pt-4">
+                    <Separator className="border-cyber-light/10" />
+                    <UploadButton onUpload={(nodes) => setStructure(nodes)} isUploading={isGenerating} />
+                    <Separator className="border-cyber-light/10" />
+                  </div>
                 </div>
                 <Button
                   size="lg"
@@ -189,7 +195,7 @@ export default function DockerfileGenerator() {
               </div>
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-neon-pink">Project Structure</h3>
-                <Card className="text-white bg-cyber-dark/50 border-cyber-light/20 backdrop-blur-sm min-h-[400px]">
+                <Card className="bg-cyber-dark/50 border-cyber-light/20 backdrop-blur-sm min-h-[400px]">
                   <CardContent>
                     <TreeView data={structure} onAdd={handleAddNode} onDelete={handleDeleteNode} />
                   </CardContent>
