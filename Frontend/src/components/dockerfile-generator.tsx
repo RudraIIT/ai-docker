@@ -81,7 +81,7 @@ export default function DockerfileGenerator() {
   const handleGenerate = async () => {
     setIsGenerating(true)
     try {
-        const response = await axios.post('http://localhost:3000/docker-generate',{
+        const response = await axios.post('https://ai-docker.onrender.com/docker-generate',{
             language,
             structure
         });
