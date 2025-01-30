@@ -7,8 +7,15 @@ import dotenv from 'dotenv';
 const app = express();
 dotenv.config();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const deploy_dirname = path.resolve();
+
+app.set('trust proxy', 1);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(deploy_dirname, '/Frontend/dist')))
 app.use(cors());
 
 const client = new HfInference(process.env.HF_KEY);
@@ -55,5 +62,14 @@ app.post('/docker-generate', async(req, res) => {
 
 app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
+    if(process.env.NODE_ENV === 'production'){
+        app.get('*', (req, res) => {
+            res.sendFile(path.resolve(deploy_dirname, "frontend","dist","index.html"));
+        })
+    } else {
+        app.get('/', (req, res) => {
+            res.send('API is running...');
+        })
+    }
 }
 );
