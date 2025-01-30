@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Download, AlertTriangle, FileCode, FileDown } from "lucide-react"
+import { AlertTriangle, FileCode, FileDown } from "lucide-react"
 import CodeBlock from "@/components/code-block"
 import axios from 'axios'
 
